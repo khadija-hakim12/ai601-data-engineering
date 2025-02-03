@@ -48,13 +48,27 @@ def clean_data(input_file, output_file):
         2. Humidity should be between 0% and 80%
         3. Wind speed in a betweeen 3 and 150
     """
-    with open(input_file, mode ='r')as file:
-        csvFile = csv.reader(file)
+    with open(input_file, mode = 'r') as input_file, open(output_file, mode='w', newline='') as output_file:
+        reader = csv.reader(input_file)
+        writer = csv.writer(output_file)
         
-
-
-    ### TODO: complete rest of the code
+        # Read and write header
+        headers = next(reader)
+        writer.writerow(headers)
+        
+        # Filter and write valid rows
+        for row in reader:
+            time, temp, humidity, wind_speed = row
             
+            try:
+                temp = float(temp)
+                humidity = float(humidity)
+                wind_speed = float(wind_speed)
+                
+                if 0 <= temp <= 60 and 0 <= humidity <= 80 and 3 <= wind_speed <= 150:
+                    writer.writerow([time, temp, humidity, wind_speed])
+            except ValueError:
+                continue  # Skip rows with invalid data
     print("Cleaned data saved to", output_file)
 
 ### Part 4. Aggregation Operation 
@@ -94,7 +108,7 @@ if __name__ == "__main__":
     if weather_data:
         save_to_csv(weather_data, "weather_data.csv") #getting data-> json and  saving into weather_data
         print("Weather data saved to weather_data.csv")
-        #clean_data("weather_data.csv", "cleaned_data.csv")
+        clean_data("weather_data.csv", "cleaned_data.csv")
         #print("Weather data clean saved to cleaned_data.csv")
         #summarize_data("cleaned_data.csv")
         
